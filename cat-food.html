@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cat Feeding Calculator — Free Daily Food Portion Guide | PawMetrics</title>
+<meta name="description" content="Free cat feeding calculator. Enter your cat's weight, age and activity level to get the perfect daily food amount in grams and cups. No signup required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --bark: #2C1810;
+    --bark-light: #5C3D2E;
+    --amber: #D4854A;
+    --amber-light: #F0A96B;
+    --amber-pale: #FDF0E4;
+    --sage: #7A9E7E;
+    --sage-pale: #EEF4EF;
+    --border: #E8DDD4;
+    --text-muted: #8B7355;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--bark); min-height: 100vh; }
+
+  nav {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--bark); text-decoration: none; }
+  .logo span { color: var(--amber); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--bark); }
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  .hero {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--amber-pale);
+    color: var(--amber);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    max-width: 680px;
+    margin: 0 auto 16px;
+  }
+
+  .hero h1 em { color: var(--amber); font-style: normal; }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 720px) { .main { grid-template-columns: 1fr; } }
+
+  .calc-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(44,24,16,0.06);
+  }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 36px;
+    height: 36px;
+    background: var(--amber-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .field { margin-bottom: 22px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--bark);
+    margin-bottom: 8px;
+  }
+
+  .sublabel { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+
+  input[type="number"],
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--bark);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(212,133,74,0.15);
+    background: var(--warm-white);
+  }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  /* UNIT TOGGLE */
+  .unit-toggle {
+    display: flex;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .unit-btn {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .unit-btn.active { background: var(--amber); color: #fff; font-weight: 500; }
+
+  /* CAT TYPE */
+  .cat-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .cat-opt {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+  }
+
+  .cat-opt:hover { border-color: var(--amber-light); }
+  .cat-opt.selected { border-color: var(--amber); background: var(--amber-pale); }
+  .cat-opt .cat-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+  .cat-opt .cat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+
+  .calc-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--bark);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+  }
+
+  .calc-btn:hover { background: var(--bark-light); }
+  .calc-btn:active { transform: scale(0.99); }
+
+  /* RESULT CARD */
+  .result-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(44,24,16,0.06);
+  }
+
+  .result-empty { text-align: center; padding: 40px 20px; }
+  .result-empty .big-icon { font-size: 64px; margin-bottom: 16px; display: block; opacity: 0.4; }
+  .result-empty p { color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+
+  .result-content { display: none; }
+  .result-content.show { display: block; }
+  .result-empty.hide { display: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .result-content.show { animation: fadeUp 0.35s ease; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .metric-box {
+    background: var(--amber-pale);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+
+  .metric-box.sage { background: var(--sage-pale); }
+
+  .metric-num {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--bark);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .metric-unit {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .schedule-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .schedule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--cream);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  .schedule-time { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .schedule-amount { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; color: var(--amber); }
+
+  .tip-box {
+    background: var(--sage-pale);
+    border-left: 3px solid var(--sage);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--bark-light);
+    line-height: 1.6;
+  }
+
+  .tip-box strong { color: var(--sage); }
+
+  .disclaimer {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .info-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+
+  .info-box { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+  .info-box h3 { font-family: 'Fraunces', serif; font-size: 16px; margin-bottom: 10px; }
+  .info-box p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .info-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+
+  .article { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 40px; }
+  .article h2 { font-family: 'Fraunces', serif; font-size: 26px; margin-bottom: 16px; }
+  .article h3 { font-family: 'Fraunces', serif; font-size: 18px; margin: 24px 0 10px; color: var(--bark-light); }
+  .article p { font-size: 15px; color: var(--bark-light); line-height: 1.8; margin-bottom: 14px; }
+
+  footer {
+    background: var(--bark);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  footer a { color: var(--amber-light); text-decoration: none; }
+  footer strong { color: #fff; font-family: 'Fraunces', serif; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/index.html" class="logo">🐾 Paw<span>Metrics</span></a>
+  <ul class="nav-links">
+    <li><a href="/index.html">Dog Food Calculator</a></li>
+    <li><a href="/dog-years.html">Dog Age Calculator</a></li>
+    <li><a href="/puppy-vaccine.html">Puppy Vaccines</a></li>
+    <li><a href="/pet-cost.html">Pet Cost</a></li>
+    <li><a href="/cat-food.html">Cat Food Calculator</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">🐱 Free Tool — No Signup Needed</div>
+  <h1>Cat Feeding Calculator — <em>Free</em> Daily Portion Guide</h1>
+  <p>Enter your cat's weight, age and activity level to get the exact daily food amount in grams and cups — with a full feeding schedule.</p>
+</section>
+
+<div class="main">
+
+  <!-- INPUT CARD -->
+  <div class="calc-card">
+    <div class="card-title">
+      <div class="icon">🐱</div>
+      Your Cat's Details
+    </div>
+
+    <div class="field">
+      <label>Cat's Name <span class="sublabel">(optional)</span></label>
+      <input type="text" id="catName" placeholder="e.g. Luna">
+    </div>
+
+    <div class="field">
+      <label>Cat's Weight</label>
+      <div class="unit-toggle">
+        <button class="unit-btn active" onclick="setUnit('kg')">Kilograms (kg)</button>
+        <button class="unit-btn" onclick="setUnit('lbs')">Pounds (lbs)</button>
+      </div>
+      <input type="number" id="weight" placeholder="e.g. 4.5" min="0.5" max="20" step="0.5">
+    </div>
+
+    <div class="field">
+      <label>Cat's Age</label>
+      <div class="select-wrap">
+        <select id="age">
+          <option value="">-- Select age --</option>
+          <option value="kitten">Kitten (under 1 year)</option>
+          <option value="young">Young Adult (1–3 years)</option>
+          <option value="adult">Adult (3–7 years)</option>
+          <option value="senior">Senior (7+ years)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Cat Type</label>
+      <div class="cat-type-grid">
+        <div class="cat-opt" onclick="setCatType('indoor')" id="ct-indoor">
+          <span class="cat-emoji">🏠</span>
+          <span class="cat-label">Indoor<br>only</span>
+        </div>
+        <div class="cat-opt" onclick="setCatType('outdoor')" id="ct-outdoor">
+          <span class="cat-emoji">🌿</span>
+          <span class="cat-label">Indoor /<br>Outdoor</span>
+        </div>
+        <div class="cat-opt" onclick="setCatType('active')" id="ct-active">
+          <span class="cat-emoji">⚡</span>
+          <span class="cat-label">Very<br>Active</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Food Type</label>
+      <div class="select-wrap">
+        <select id="foodtype">
+          <option value="dry">Dry Kibble</option>
+          <option value="wet">Wet / Canned Food</option>
+          <option value="raw">Raw Food Diet</option>
+          <option value="mixed">Mixed (Dry + Wet)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Neutered / Spayed?</label>
+      <div class="select-wrap">
+        <select id="neutered">
+          <option value="yes">Yes — neutered / spayed</option>
+          <option value="no">No — intact</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">🐱 Calculate Daily Food Amount</button>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon">📊</div>
+      Feeding Results
+    </div>
+
+    <div class="result-empty" id="resultEmpty">
+      <span class="big-icon">🐈</span>
+      <p>Fill in your cat's details on the left and click <strong>Calculate</strong> to see the perfect daily feeding amount and schedule.</p>
+    </div>
+
+    <div class="result-content" id="resultContent">
+
+      <div style="margin-bottom:18px;">
+        <p style="font-size:14px;color:var(--text-muted);">Daily food for <strong id="rName" style="color:var(--bark);"></strong></p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-num" id="rGrams">—</div>
+          <div class="metric-unit">grams / day</div>
+        </div>
+        <div class="metric-box sage">
+          <div class="metric-num" id="rCups">—</div>
+          <div class="metric-unit">cups / day</div>
+        </div>
+        <div class="metric-box sage">
+          <div class="metric-num" id="rKcal">—</div>
+          <div class="metric-unit">kcal / day</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-num" id="rMeals">—</div>
+          <div class="metric-unit">meals / day</div>
+        </div>
+      </div>
+
+      <p class="schedule-title">Recommended Feeding Schedule</p>
+      <div id="scheduleRows"></div>
+
+      <div class="tip-box" id="tipBox"></div>
+
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ This calculator provides estimates based on general feline nutrition guidelines. Always consult your vet for personalised feeding advice, especially for kittens, senior cats or cats with health conditions.
+    </div>
+  </div>
+
+</div>
+
+<!-- INFO SECTION -->
+<div class="info-section">
+  <div class="info-grid">
+    <div class="info-box">
+      <span class="info-icon">⚖️</span>
+      <h3>Weight Is Everything</h3>
+      <p>A cat's ideal weight is the most important factor in calculating food portions. Over 50% of cats in the UK and USA are overweight — usually because owners give too much food.</p>
+    </div>
+    <div class="info-box">
+      <span class="info-icon">✂️</span>
+      <h3>Neutering Changes Needs</h3>
+      <p>Neutered and spayed cats have lower energy needs than intact cats — typically 20–30% less. Feeding a neutered cat the same amount as an intact cat is one of the leading causes of feline obesity.</p>
+    </div>
+    <div class="info-box">
+      <span class="info-icon">🌿</span>
+      <h3>Indoor vs Outdoor Cats</h3>
+      <p>Indoor-only cats are much less active than outdoor cats and need fewer calories. An indoor cat may need 20% less food than an outdoor cat of the same weight and age.</p>
+    </div>
+  </div>
+
+  <div class="article">
+    <h2>How Much Should I Feed My Cat? Complete Feeding Guide</h2>
+    <p>Feeding your cat the right amount is one of the most important things you can do for their long-term health. Obesity in cats leads to diabetes, joint problems and a shorter life. Too little food leads to malnutrition and muscle loss.</p>
+
+    <h3>The Basic Calculation</h3>
+    <p>A healthy adult cat typically needs around 40–45 calories per kilogram of body weight per day. However, this changes significantly based on age, activity level, whether the cat is neutered, and the type of food being fed.</p>
+
+    <h3>Kittens Need Much More</h3>
+    <p>Kittens under 6 months need about twice the calories of an adult cat of the same weight. They are growing rapidly and burn energy very fast. Always feed kitten-specific food which has higher protein and fat content for healthy development.</p>
+
+    <h3>Senior Cats Need Less</h3>
+    <p>From around age 7, most cats become less active and need fewer calories to maintain a healthy weight. Senior-specific cat food tends to have fewer calories but more joint supplements and easily digestible protein.</p>
+
+    <h3>Dry Food vs Wet Food</h3>
+    <p>Wet cat food contains 70–80% water, which means you need to feed significantly more of it by weight to meet calorie needs. However, wet food is excellent for keeping cats hydrated — cats naturally have a low thirst drive and often do not drink enough water.</p>
+
+    <h3>How Many Meals Per Day?</h3>
+    <p>Adult cats do well on 2–3 meals per day. Kittens under 6 months should eat 3–4 times daily. Free-feeding (leaving dry food out all day) is not recommended as it almost always leads to overeating and obesity, especially in indoor cats.</p>
+  </div>
+</div>
+
+<footer>
+  <strong>🐾 PawMetrics</strong><br><br>
+  Free pet care calculators for dog and cat owners.<br>
+  Results are estimates only — always consult your vet.<br><br>
+  <a href="/index.html">Dog Food Calculator</a> &nbsp;·&nbsp;
+  <a href="/dog-years.html">Dog Age Calculator</a> &nbsp;·&nbsp;
+  <a href="/puppy-vaccine.html">Puppy Vaccines</a> &nbsp;·&nbsp;
+  <a href="/pet-cost.html">Pet Cost Calculator</a> &nbsp;·&nbsp;
+  <a href="/cat-food.html">Cat Food Calculator</a>
+  <br><br>
+  <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+  <a href="/about.html">About Us</a> &nbsp;·&nbsp;
+  <a href="/contact.html">Contact</a>
+</footer>
+
+<script>
+  let weightUnit = 'kg';
+  let catType = '';
+
+  function setUnit(unit) {
+    weightUnit = unit;
+    document.querySelectorAll('.unit-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && unit === 'kg') || (i === 1 && unit === 'lbs'));
+    });
+  }
+
+  function setCatType(type) {
+    catType = type;
+    ['indoor','outdoor','active'].forEach(t => {
+      document.getElementById('ct-' + t).classList.toggle('selected', t === type);
+    });
+  }
+
+  function calculate() {
+    const name = document.getElementById('catName').value.trim();
+    const weightVal = parseFloat(document.getElementById('weight').value);
+    const age = document.getElementById('age').value;
+    const foodtype = document.getElementById('foodtype').value;
+    const neutered = document.getElementById('neutered').value;
+
+    if (!weightVal || !age || !catType) {
+      alert('Please fill in all fields and select your cat\'s type!');
+      return;
+    }
+
+    let weightKg = weightUnit === 'lbs' ? weightVal * 0.453592 : weightVal;
+
+    // Base RER for cats: 70 * weight^0.75
+    let rer = 70 * Math.pow(weightKg, 0.75);
+
+    // Age multiplier
+    const ageMulti = { kitten: 2.5, young: 1.6, adult: 1.4, senior: 1.1 };
+    // Cat type multiplier
+    const typeMulti = { indoor: 0.85, outdoor: 1.0, active: 1.2 };
+    // Neutered adjustment
+    const neuteredMulti = neutered === 'yes' ? 0.85 : 1.0;
+
+    let kcalPerDay = rer * (ageMulti[age] || 1.4) * (typeMulti[catType] || 1.0) * neuteredMulti;
+    kcalPerDay = Math.round(kcalPerDay);
+
+    // Grams based on food type
+    const kcalPer100g = { dry: 350, wet: 85, raw: 140, mixed: 230 };
+    const gramsPerDay = Math.round((kcalPerDay / kcalPer100g[foodtype]) * 100);
+
+    // Cups
+    const gramPerCup = foodtype === 'wet' ? 240 : 100;
+    const cupsPerDay = (gramsPerDay / gramPerCup).toFixed(1);
+
+    // Meals
+    const meals = age === 'kitten' ? 4 : 3;
+    const gramsPerMeal = Math.round(gramsPerDay / meals);
+    const cupsPerMeal = (gramsPerMeal / gramPerCup).toFixed(1);
+
+    const displayName = name ? name.charAt(0).toUpperCase() + name.slice(1) : 'your cat';
+
+    document.getElementById('rName').textContent = displayName;
+    document.getElementById('rGrams').textContent = gramsPerDay;
+    document.getElementById('rCups').textContent = cupsPerDay;
+    document.getElementById('rKcal').textContent = kcalPerDay;
+    document.getElementById('rMeals').textContent = meals;
+
+    const schedules = {
+      4: [
+        { time: '🌅 7:00 AM', label: 'Morning' },
+        { time: '☀️ 12:00 PM', label: 'Midday' },
+        { time: '🌆 5:00 PM', label: 'Evening' },
+        { time: '🌙 9:00 PM', label: 'Night' }
+      ],
+      3: [
+        { time: '🌅 7:00 AM', label: 'Morning' },
+        { time: '☀️ 1:00 PM', label: 'Afternoon' },
+        { time: '🌆 6:00 PM', label: 'Evening' }
+      ]
+    };
+
+    document.getElementById('scheduleRows').innerHTML = schedules[meals].map(s => `
+      <div class="schedule-row">
+        <span class="schedule-time">${s.time} <span style="color:var(--text-muted);font-size:12px;">${s.label}</span></span>
+        <span class="schedule-amount">${gramsPerMeal}g / ${cupsPerMeal} cup</span>
+      </div>
+    `).join('');
+
+    const tips = {
+      kitten: '🐱 <strong>Kitten tip:</strong> Feed kitten-specific food until 12 months. Kittens need 2x the protein of adult cats for healthy bone and muscle development.',
+      young: '💪 <strong>Young adult tip:</strong> This is peak energy age. Make sure food matches activity level. Switch to adult formula after 12 months.',
+      adult: '✅ <strong>Adult tip:</strong> Measure food every meal — never free-feed. Even 10% overfeeding leads to obesity within months in indoor cats.',
+      senior: '🧓 <strong>Senior tip:</strong> Switch to senior formula after age 7. Senior cats need more easily digestible protein and fewer calories. Increase vet visits to twice per year.'
+    };
+
+    document.getElementById('tipBox').innerHTML = tips[age];
+    document.getElementById('resultEmpty').classList.add('hide');
+    document.getElementById('resultContent').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
