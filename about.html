@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | PawMetrics — Free Pet Care Calculators</title>
+<meta name="description" content="Learn about PawMetrics.org — free pet care calculators for dog and cat owners in the USA, UK, Canada and Australia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --bark: #2C1810; --bark-light: #5C3D2E;
+    --amber: #D4854A; --amber-light: #F0A96B; --amber-pale: #FDF0E4;
+    --sage: #7A9E7E; --sage-pale: #EEF4EF; --border: #E8DDD4; --text-muted: #8B7355;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--bark); min-height: 100vh; }
+  nav { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--bark); text-decoration: none; }
+  .logo span { color: var(--amber); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--bark); }
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  .hero { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 56px 24px 48px; text-align: center; }
+  .hero-badge { display: inline-flex; background: var(--amber-pale); color: var(--amber); font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 100px; margin-bottom: 20px; }
+  .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(32px, 5vw, 48px); font-weight: 700; margin: 0 auto 16px; max-width: 600px; line-height: 1.2; }
+  .hero h1 em { color: var(--amber); font-style: normal; }
+  .hero p { font-size: 17px; color: var(--text-muted); max-width: 500px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
+
+  .page { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .about-grid { grid-template-columns: 1fr; } }
+
+  .about-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; padding: 28px; }
+  .about-icon { font-size: 36px; margin-bottom: 14px; display: block; }
+  .about-card h3 { font-family: 'Fraunces', serif; font-size: 18px; margin-bottom: 10px; }
+  .about-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  .mission { background: var(--bark); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 28px; }
+  .mission h2 { font-family: 'Fraunces', serif; font-size: 28px; color: #fff; margin-bottom: 14px; }
+  .mission p { font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.7; max-width: 560px; margin: 0 auto; }
+
+  .tools-section { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 32px; margin-bottom: 28px; }
+  .tools-section h2 { font-family: 'Fraunces', serif; font-size: 22px; margin-bottom: 20px; }
+
+  .tool-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--cream); text-decoration: none; }
+  .tool-item:last-child { border-bottom: none; }
+  .tool-item:hover .tool-name { color: var(--amber); }
+  .tool-emoji { font-size: 26px; width: 36px; text-align: center; flex-shrink: 0; }
+  .tool-name { font-size: 14px; font-weight: 500; color: var(--bark); display: block; margin-bottom: 2px; }
+  .tool-desc { font-size: 12px; color: var(--text-muted); }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  @media (max-width: 500px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+  .stat-box { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--amber); display: block; margin-bottom: 4px; }
+  .stat-lbl { font-size: 12px; color: var(--text-muted); }
+
+  footer { background: var(--bark); color: rgba(255,255,255,0.6); text-align: center; padding: 32px 24px; font-size: 13px; line-height: 1.8; }
+  footer a { color: #F0A96B; text-decoration: none; }
+  footer strong { color: #fff; font-family: 'Fraunces', serif; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/index.html" class="logo">🐾 Paw<span>Metrics</span></a>
+  <ul class="nav-links">
+    <li><a href="/index.html">Dog Food Calculator</a></li>
+    <li><a href="/dog-years.html">Dog Age Calculator</a></li>
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">🐾 About PawMetrics</div>
+  <h1>Free Pet Tools Built for <em>Real</em> Pet Owners</h1>
+  <p>PawMetrics provides free, accurate, easy-to-use calculators for dog and cat owners — no signup, no paywalls, no nonsense.</p>
+</section>
+
+<div class="page">
+
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-num">5</span><span class="stat-lbl">Free tools</span></div>
+    <div class="stat-box"><span class="stat-num">100%</span><span class="stat-lbl">Free forever</span></div>
+    <div class="stat-box"><span class="stat-num">4</span><span class="stat-lbl">Countries covered</span></div>
+    <div class="stat-box"><span class="stat-num">0</span><span class="stat-lbl">Signups needed</span></div>
+  </div>
+
+  <div class="mission">
+    <h2>Our Mission 🐾</h2>
+    <p>Every pet owner deserves access to accurate, easy-to-use tools — without paying for a subscription or creating an account. PawMetrics exists to give dog and cat owners free, science-backed calculators they can trust.</p>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-card">
+      <span class="about-icon">🆓</span>
+      <h3>Always Free</h3>
+      <p>Every tool on PawMetrics is completely free to use with no account required, no email needed and no hidden fees. We are funded by advertising, not by charging our users.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">🔬</span>
+      <h3>Science-Based</h3>
+      <p>Our calculators are built on established veterinary nutrition guidelines and peer-reviewed research. We clearly mark all results as estimates and always recommend consulting your vet.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">🌍</span>
+      <h3>Built for USA & UK</h3>
+      <p>Our tools are designed primarily for pet owners in the USA, UK, Canada and Australia — with country-specific vaccine schedules, local pricing and relevant content for each market.</p>
+    </div>
+    <div class="about-card">
+      <span class="about-icon">📱</span>
+      <h3>Mobile Friendly</h3>
+      <p>All our tools work perfectly on any device — phone, tablet or desktop. No app download needed. Just open the page and use the tool instantly.</p>
+    </div>
+  </div>
+
+  <div class="tools-section">
+    <h2>Our Free Pet Tools</h2>
+    <a href="/index.html" class="tool-item">
+      <span class="tool-emoji">🍖</span>
+      <div><span class="tool-name">Dog Food Calculator</span><span class="tool-desc">Daily feeding amounts in grams and cups by weight, age and activity</span></div>
+    </a>
+    <a href="/dog-years.html" class="tool-item">
+      <span class="tool-emoji">🐕</span>
+      <div><span class="tool-name">Dog Age Calculator</span><span class="tool-desc">Convert your dog's age to equivalent human years by breed size</span></div>
+    </a>
+    <a href="/puppy-vaccine.html" class="tool-item">
+      <span class="tool-emoji">💉</span>
+      <div><span class="tool-name">Puppy Vaccine Schedule Generator</span><span class="tool-desc">Full vaccination schedule with exact dates from your puppy's birth date</span></div>
+    </a>
+    <a href="/pet-cost.html" class="tool-item">
+      <span class="tool-emoji">💰</span>
+      <div><span class="tool-name">Pet Annual Cost Calculator</span><span class="tool-desc">Total yearly cost of owning a dog or cat including all expenses</span></div>
+    </a>
+    <a href="/cat-food.html" class="tool-item">
+      <span class="tool-emoji">🐱</span>
+      <div><span class="tool-name">Cat Feeding Calculator</span><span class="tool-desc">Daily food portions for cats by weight, age and activity level</span></div>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <strong>🐾 PawMetrics</strong><br><br>
+  Free pet care calculators for dog and cat owners in the USA, UK, Canada and Australia.<br>
+  Results are estimates only — always consult your vet.<br><br>
+  <a href="/index.html">Dog Food Calculator</a> &nbsp;·&nbsp;
+  <a href="/dog-years.html">Dog Age Calculator</a> &nbsp;·&nbsp;
+  <a href="/puppy-vaccine.html">Puppy Vaccines</a> &nbsp;·&nbsp;
+  <a href="/pet-cost.html">Pet Cost Calculator</a> &nbsp;·&nbsp;
+  <a href="/cat-food.html">Cat Food Calculator</a>
+  <br><br>
+  <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+  <a href="/about.html">About Us</a> &nbsp;·&nbsp;
+  <a href="/contact.html">Contact</a>
+</footer>
+</body>
+</html>
