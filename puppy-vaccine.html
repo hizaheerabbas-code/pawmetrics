@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puppy Vaccination Schedule Generator — Free Tool | PawMetrics</title>
+<meta name="description" content="Free puppy vaccination schedule generator. Enter your puppy's date of birth and get a complete vaccine schedule with exact dates. No signup required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --bark: #2C1810;
+    --bark-light: #5C3D2E;
+    --amber: #D4854A;
+    --amber-light: #F0A96B;
+    --amber-pale: #FDF0E4;
+    --sage: #7A9E7E;
+    --sage-pale: #EEF4EF;
+    --border: #E8DDD4;
+    --text-muted: #8B7355;
+    --done-bg: #EEF4EF;
+    --done-color: #4A7A4E;
+    --due-bg: #FDF0E4;
+    --due-color: #C07030;
+    --upcoming-bg: #F5F5FF;
+    --upcoming-color: #5555AA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--bark); min-height: 100vh; }
+
+  nav {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--bark); text-decoration: none; }
+  .logo span { color: var(--amber); }
+
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--bark); }
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  .hero {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--amber-pale);
+    color: var(--amber);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--bark);
+    max-width: 680px;
+    margin: 0 auto 16px;
+  }
+
+  .hero h1 em { color: var(--amber); font-style: normal; }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 720px) { .main { grid-template-columns: 1fr; } }
+
+  .calc-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(44,24,16,0.06);
+  }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 36px;
+    height: 36px;
+    background: var(--amber-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .field { margin-bottom: 22px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--bark);
+    margin-bottom: 8px;
+  }
+
+  .sublabel { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+
+  input[type="text"],
+  input[type="date"],
+  select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--bark);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(212,133,74,0.15);
+    background: var(--warm-white);
+  }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  .calc-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--bark);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+  }
+
+  .calc-btn:hover { background: var(--bark-light); }
+  .calc-btn:active { transform: scale(0.99); }
+
+  /* RESULT CARD */
+  .result-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(44,24,16,0.06);
+  }
+
+  .result-empty { text-align: center; padding: 40px 20px; }
+  .result-empty .big-icon { font-size: 64px; margin-bottom: 16px; display: block; opacity: 0.4; }
+  .result-empty p { color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+
+  .result-content { display: none; }
+  .result-content.show { display: block; }
+  .result-empty.hide { display: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .result-content.show { animation: fadeUp 0.35s ease; }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: var(--bark);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .summary-name {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    color: var(--amber-light);
+    margin-bottom: 4px;
+  }
+
+  .summary-dob {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 12px;
+  }
+
+  .summary-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .sum-stat { text-align: center; }
+  .sum-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: #fff; display: block; }
+  .sum-lbl { font-size: 11px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* VACCINE ROWS */
+  .vaccine-row {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .vaccine-row.done { background: var(--done-bg); }
+  .vaccine-row.due-soon { background: var(--due-bg); }
+  .vaccine-row.upcoming { background: var(--upcoming-bg); }
+
+  .vax-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .done .vax-status-dot { background: var(--done-color); }
+  .due-soon .vax-status-dot { background: var(--due-color); }
+  .upcoming .vax-status-dot { background: var(--upcoming-color); }
+
+  .vax-body { flex: 1; }
+
+  .vax-name {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .done .vax-name { color: var(--done-color); }
+  .due-soon .vax-name { color: var(--due-color); }
+  .upcoming .vax-name { color: var(--upcoming-color); }
+
+  .vax-date {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .vax-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .done .vax-badge { background: var(--done-color); color: #fff; }
+  .due-soon .vax-badge { background: var(--due-color); color: #fff; }
+  .upcoming .vax-badge { background: var(--upcoming-color); color: #fff; }
+
+  /* TIP BOX */
+  .tip-box {
+    background: var(--sage-pale);
+    border-left: 3px solid var(--sage);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--bark-light);
+    line-height: 1.6;
+  }
+
+  .tip-box strong { color: var(--sage); }
+
+  .disclaimer {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  /* INFO SECTION */
+  .info-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+
+  .info-box {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .info-box h3 { font-family: 'Fraunces', serif; font-size: 16px; margin-bottom: 10px; }
+  .info-box p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .info-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+
+  .article {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+  }
+
+  .article h2 { font-family: 'Fraunces', serif; font-size: 26px; margin-bottom: 16px; }
+  .article h3 { font-family: 'Fraunces', serif; font-size: 18px; margin: 24px 0 10px; color: var(--bark-light); }
+  .article p { font-size: 15px; color: var(--bark-light); line-height: 1.8; margin-bottom: 14px; }
+
+  footer {
+    background: var(--bark);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  footer a { color: var(--amber-light); text-decoration: none; }
+  footer strong { color: #fff; font-family: 'Fraunces', serif; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/index.html" class="logo">🐾 Paw<span>Metrics</span></a>
+  <ul class="nav-links">
+    <li><a href="/index.html">Dog Food Calculator</a></li>
+    <li><a href="/dog-years.html">Dog Age Calculator</a></li>
+    <li><a href="/puppy-vaccine.html">Puppy Vaccines</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">💉 Free Tool — No Signup Needed</div>
+  <h1>Puppy Vaccination Schedule — <em>Complete Guide</em> by Birth Date</h1>
+  <p>Enter your puppy's date of birth and get a full vaccination schedule with exact dates for every vaccine. Printable and free!</p>
+</section>
+
+<div class="main">
+
+  <!-- INPUT CARD -->
+  <div class="calc-card">
+    <div class="card-title">
+      <div class="icon">💉</div>
+      Your Puppy's Details
+    </div>
+
+    <div class="field">
+      <label>Puppy's Name <span class="sublabel">(optional)</span></label>
+      <input type="text" id="puppyName" placeholder="e.g. Max">
+    </div>
+
+    <div class="field">
+      <label>Puppy's Date of Birth</label>
+      <input type="date" id="puppyDob">
+    </div>
+
+    <div class="field">
+      <label>Breed Size</label>
+      <div class="select-wrap">
+        <select id="breedSize">
+          <option value="">-- Select size --</option>
+          <option value="small">Small (under 10kg)</option>
+          <option value="medium">Medium (10–25kg)</option>
+          <option value="large">Large (25kg+)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Country</label>
+      <div class="select-wrap">
+        <select id="country">
+          <option value="us">United States 🇺🇸</option>
+          <option value="uk">United Kingdom 🇬🇧</option>
+          <option value="ca">Canada 🇨🇦</option>
+          <option value="au">Australia 🇦🇺</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="generate()">💉 Generate Vaccine Schedule</button>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon">📋</div>
+      Vaccine Schedule
+    </div>
+
+    <div class="result-empty" id="resultEmpty">
+      <span class="big-icon">🐶</span>
+      <p>Enter your puppy's details on the left and click <strong>Generate</strong> to see their full vaccination schedule with exact dates.</p>
+    </div>
+
+    <div class="result-content" id="resultContent">
+
+      <div class="summary-box">
+        <div class="summary-name" id="rName"></div>
+        <div class="summary-dob" id="rDob"></div>
+        <div class="summary-stats">
+          <div class="sum-stat">
+            <span class="sum-num" id="rAge"></span>
+            <span class="sum-lbl">Weeks old</span>
+          </div>
+          <div class="sum-stat">
+            <span class="sum-num" id="rTotal"></span>
+            <span class="sum-lbl">Vaccines total</span>
+          </div>
+          <div class="sum-stat">
+            <span class="sum-num" id="rDone"></span>
+            <span class="sum-lbl">Completed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--done-color);"></div> Done</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--due-color);"></div> Due soon</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--upcoming-color);"></div> Upcoming</div>
+      </div>
+
+      <div id="vaccineRows"></div>
+
+      <div class="tip-box" id="tipBox">
+        💡 <strong>Vet tip:</strong> Always keep a record of your puppy's vaccinations. Ask your vet for an official vaccination booklet to track every dose.
+      </div>
+
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ This schedule is based on general guidelines. Always consult your vet — they may adjust timing based on your puppy's health and local disease risks.
+    </div>
+  </div>
+
+</div>
+
+<!-- INFO SECTION -->
+<div class="info-section">
+  <div class="info-grid">
+    <div class="info-box">
+      <span class="info-icon">🛡️</span>
+      <h3>Why Vaccines Matter</h3>
+      <p>Puppies lose their mother's immunity at 6–8 weeks. Vaccines protect them against serious diseases like Parvovirus, Distemper and Rabies during this vulnerable window.</p>
+    </div>
+    <div class="info-box">
+      <span class="info-icon">📅</span>
+      <h3>Timing Is Critical</h3>
+      <p>Missing a vaccine by even 2 weeks can leave your puppy unprotected. Our schedule gives you exact dates so you never miss a critical vaccination window.</p>
+    </div>
+    <div class="info-box">
+      <span class="info-icon">🌍</span>
+      <h3>Country Differences</h3>
+      <p>Vaccine schedules vary by country. Rabies vaccines are legally required in the USA and Canada but not the UK. We adjust the schedule based on your location.</p>
+    </div>
+  </div>
+
+  <div class="article">
+    <h2>Puppy Vaccination Schedule — Complete Guide for New Owners</h2>
+    <p>Bringing home a new puppy is an exciting time — but vaccinations are one of the most important things you need to plan for. Missing a vaccine or getting the timing wrong can leave your puppy dangerously unprotected during their most vulnerable weeks.</p>
+
+    <h3>When Should Puppy Vaccines Start?</h3>
+    <p>Puppies receive some immunity from their mother's milk, but this fades between 6 and 12 weeks. Vaccinations typically start at 6–8 weeks of age to bridge this gap. The exact timing depends on your puppy's breed size and your vet's protocol.</p>
+
+    <h3>Core Vaccines Every Puppy Needs</h3>
+    <p>The DHPP vaccine (Distemper, Hepatitis, Parvovirus, Parainfluenza) is given in a series starting at 6–8 weeks and repeated every 3–4 weeks until 16 weeks of age. This is the most important vaccine series for any puppy anywhere in the world.</p>
+
+    <h3>Rabies Vaccine</h3>
+    <p>In the USA and Canada, the Rabies vaccine is legally required and is given at 12–16 weeks. In the UK and Australia, Rabies vaccination is only required for dogs travelling internationally. Our schedule automatically adjusts for your country.</p>
+
+    <h3>Bordetella (Kennel Cough)</h3>
+    <p>The Bordetella vaccine protects against kennel cough — a highly contagious respiratory infection. It is strongly recommended if your puppy will attend puppy classes, dog parks, boarding kennels or grooming salons.</p>
+
+    <h3>What Happens After the Puppy Series?</h3>
+    <p>Once the initial puppy vaccine series is complete at around 16 weeks, your dog will need booster vaccinations. Most core vaccines are boosted at 1 year, then every 1–3 years for life depending on the vaccine and your vet's recommendations.</p>
+  </div>
+</div>
+
+<footer>
+  <strong>🐾 PawMetrics</strong><br><br>
+  Free pet care calculators for dog and cat owners.<br>
+  Results are estimates only — always consult your vet.<br><br>
+  <a href="/index.html">Dog Food Calculator</a> &nbsp;·&nbsp;
+  <a href="/dog-years.html">Dog Age Calculator</a> &nbsp;·&nbsp;
+  <a href="/puppy-vaccine.html">Puppy Vaccines</a> &nbsp;·&nbsp;
+  <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+  <a href="/about.html">About Us</a> &nbsp;·&nbsp;
+  <a href="/contact.html">Contact</a>
+</footer>
+
+<script>
+  function addDays(date, days) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  function addWeeks(date, weeks) {
+    return addDays(date, weeks * 7);
+  }
+
+  function formatDate(date) {
+    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function weeksDiff(from, to) {
+    return Math.round((to - from) / (7 * 24 * 60 * 60 * 1000));
+  }
+
+  function getStatus(vaxDate, today) {
+    const diff = (vaxDate - today) / (24 * 60 * 60 * 1000);
+    if (diff < -1) return 'done';
+    if (diff <= 14) return 'due-soon';
+    return 'upcoming';
+  }
+
+  function getStatusLabel(status) {
+    if (status === 'done') return 'Done ✓';
+    if (status === 'due-soon') return 'Due Soon!';
+    return 'Upcoming';
+  }
+
+  function generate() {
+    const name = document.getElementById('puppyName').value.trim();
+    const dob = document.getElementById('puppyDob').value;
+    const country = document.getElementById('country').value;
+    const size = document.getElementById('breedSize').value;
+
+    if (!dob || !size) {
+      alert('Please enter your puppy\'s date of birth and select a breed size!');
+      return;
+    }
+
+    const dobDate = new Date(dob);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const weeksOld = Math.floor((today - dobDate) / (7 * 24 * 60 * 60 * 1000));
+    const displayName = name ? name.charAt(0).toUpperCase() + name.slice(1) : 'Your puppy';
+
+    // Build vaccine schedule
+    const vaccines = [
+      { name: 'DHPP — First Dose', short: 'Distemper, Hepatitis, Parvovirus, Parainfluenza', week: 6 },
+      { name: 'Bordetella (Kennel Cough)', short: 'Protects against kennel cough', week: 8 },
+      { name: 'DHPP — Second Dose', short: 'Distemper, Hepatitis, Parvovirus, Parainfluenza', week: 10 },
+      { name: 'DHPP — Third Dose', short: 'Distemper, Hepatitis, Parvovirus, Parainfluenza', week: 14 },
+      { name: 'Leptospirosis — First Dose', short: 'Bacterial infection from water/wildlife', week: 10 },
+      { name: 'Leptospirosis — Second Dose', short: 'Bacterial infection from water/wildlife', week: 14 },
+    ];
+
+    if (country === 'us' || country === 'ca') {
+      vaccines.push({ name: 'Rabies Vaccine', short: 'Legally required in USA & Canada', week: 16 });
+    }
+
+    if (country === 'uk' || country === 'au') {
+      vaccines.push({ name: 'Lyme Disease Vaccine', short: 'Recommended in high tick areas', week: 12 });
+    }
+
+    vaccines.push({ name: 'DHPP — Annual Booster', short: 'First annual booster after puppy series', week: 58 });
+    vaccines.push({ name: 'Rabies Booster', short: country === 'us' || country === 'ca' ? 'Required annual booster' : 'Only needed for international travel', week: 60 });
+
+    vaccines.sort((a, b) => a.week - b.week);
+
+    let doneCount = 0;
+    const rows = vaccines.map(v => {
+      const vaxDate = addWeeks(dobDate, v.week);
+      const status = getStatus(vaxDate, today);
+      if (status === 'done') doneCount++;
+      return `
+        <div class="vaccine-row ${status}">
+          <div class="vax-status-dot"></div>
+          <div class="vax-body">
+            <div class="vax-name">${v.name}</div>
+            <div class="vax-date">📅 ${formatDate(vaxDate)} &nbsp;·&nbsp; Week ${v.week} &nbsp;·&nbsp; ${v.short}</div>
+          </div>
+          <div class="vax-badge">${getStatusLabel(status)}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('rName').textContent = displayName + "'s Vaccine Schedule";
+    document.getElementById('rDob').textContent = 'Born: ' + formatDate(dobDate);
+    document.getElementById('rAge').textContent = weeksOld > 0 ? weeksOld : '0';
+    document.getElementById('rTotal').textContent = vaccines.length;
+    document.getElementById('rDone').textContent = doneCount;
+    document.getElementById('vaccineRows').innerHTML = rows;
+
+    const tips = {
+      small: '🐩 <strong>Small breed tip:</strong> Small puppies can sometimes react more strongly to vaccines. Ask your vet about splitting doses if your puppy is very tiny.',
+      medium: '🐕 <strong>Medium breed tip:</strong> Medium dogs usually tolerate vaccines very well. Monitor for any tiredness or mild soreness for 24 hours after each dose.',
+      large: '🦮 <strong>Large breed tip:</strong> Large breeds grow fast! Make sure your vet is aware of their projected adult weight as some vaccine doses may be adjusted.'
+    };
+
+    document.getElementById('tipBox').innerHTML = tips[size] || tips['medium'];
+
+    document.getElementById('resultEmpty').classList.add('hide');
+    document.getElementById('resultContent').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
