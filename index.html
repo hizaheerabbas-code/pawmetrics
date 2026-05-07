@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dog Food Calculator — Free Daily Feeding Guide | PawMetrics</title>
+<meta name="description" content="Free dog food calculator. Enter your dog's weight, age and activity level to get the perfect daily feeding amount in grams and cups. No signup required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --bark: #2C1810;
+    --bark-light: #5C3D2E;
+    --amber: #D4854A;
+    --amber-light: #F0A96B;
+    --amber-pale: #FDF0E4;
+    --sage: #7A9E7E;
+    --sage-pale: #EEF4EF;
+    --border: #E8DDD4;
+    --text-muted: #8B7355;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--bark);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo span { color: var(--amber); }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--bark); }
+
+  /* HERO */
+  .hero {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--amber-pale);
+    color: var(--amber);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--bark);
+    max-width: 680px;
+    margin: 0 auto 16px;
+  }
+
+  .hero h1 em {
+    color: var(--amber);
+    font-style: normal;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 720px) {
+    .main { grid-template-columns: 1fr; }
+  }
+
+  /* CALCULATOR CARD */
+  .calc-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(44,24,16,0.06);
+  }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 36px;
+    height: 36px;
+    background: var(--amber-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  /* FORM */
+  .field { margin-bottom: 22px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--bark);
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .sublabel {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--bark);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="number"]:focus,
+  select:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(212,133,74,0.15);
+    background: var(--warm-white);
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  /* UNIT TOGGLE */
+  .unit-toggle {
+    display: flex;
+    gap: 0;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .unit-btn {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .unit-btn.active {
+    background: var(--amber);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  /* CALCULATE BUTTON */
+  .calc-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--bark);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .calc-btn:hover { background: var(--bark-light); }
+  .calc-btn:active { transform: scale(0.99); }
+
+  /* RESULTS CARD */
+  .result-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 20px rgba(44,24,16,0.06);
+  }
+
+  .result-empty {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .result-empty .big-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: block;
+    opacity: 0.4;
+  }
+
+  .result-empty p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .result-content { display: none; }
+
+  .result-content.show { display: block; }
+  .result-empty.hide { display: none; }
+
+  /* RESULT METRICS */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .metric-box {
+    background: var(--amber-pale);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+
+  .metric-box.sage {
+    background: var(--sage-pale);
+  }
+
+  .metric-num {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--bark);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .metric-unit {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* FEEDING SCHEDULE */
+  .schedule-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .schedule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--cream);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  .schedule-time {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .schedule-amount {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--amber);
+  }
+
+  /* TIPS */
+  .tip-box {
+    background: var(--sage-pale);
+    border-left: 3px solid var(--sage);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--bark-light);
+    line-height: 1.6;
+  }
+
+  .tip-box strong { color: var(--sage); }
+
+  /* DOG SIZE VISUAL */
+  .size-visual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .size-opt {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+  }
+
+  .size-opt:hover { border-color: var(--amber-light); }
+  .size-opt.selected { border-color: var(--amber); background: var(--amber-pale); }
+
+  .size-opt .dog-emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+  .size-opt .size-label { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  /* INFO SECTION */
+  .info-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+
+  .info-box {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .info-box h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .info-box p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .info-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  /* SEO ARTICLE */
+  .article {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+  }
+
+  .article h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+
+  .article h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    margin: 24px 0 10px;
+    color: var(--bark-light);
+  }
+
+  .article p {
+    font-size: 15px;
+    color: var(--bark-light);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--bark);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  footer a { color: var(--amber-light); text-decoration: none; }
+  footer strong { color: #fff; font-family: 'Fraunces', serif; font-size: 16px; }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-content.show {
+    animation: fadeUp 0.35s ease;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">🐾 Paw<span>Metrics</span></a>
+  <ul class="nav-links">
+    <li><a href="#">Dog Tools</a></li>
+    <li><a href="#">Cat Tools</a></li>
+    <li><a href="#">All Calculators</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🐶 Free Tool — No Signup Needed</div>
+  <h1>Dog Food Calculator — <em>Free</em> Daily Feeding Guide</h1>
+  <p>Enter your dog's details below and get the exact daily food amount in grams, cups, and a full feeding schedule.</p>
+</section>
+
+<!-- MAIN CALCULATOR -->
+<div class="main">
+
+  <!-- INPUT CARD -->
+  <div class="calc-card">
+    <div class="card-title">
+      <div class="icon">🍖</div>
+      Your Dog's Details
+    </div>
+
+    <!-- Dog Name -->
+    <div class="field">
+      <label>Dog's Name <span class="sublabel">(optional)</span></label>
+      <input type="text" id="dogName" placeholder="e.g. Buddy" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--bark);background:var(--cream);outline:none;">
+    </div>
+
+    <!-- Weight + Unit -->
+    <div class="field">
+      <label>Dog's Weight</label>
+      <div class="unit-toggle" style="margin-bottom:10px;">
+        <button class="unit-btn active" onclick="setUnit('kg')">Kilograms (kg)</button>
+        <button class="unit-btn" onclick="setUnit('lbs')">Pounds (lbs)</button>
+      </div>
+      <input type="number" id="weight" placeholder="e.g. 15" min="0.5" max="100" step="0.5">
+    </div>
+
+    <!-- Age -->
+    <div class="field">
+      <label>Dog's Age</label>
+      <div class="select-wrap">
+        <select id="age">
+          <option value="">-- Select age --</option>
+          <option value="puppy">Puppy (under 1 year)</option>
+          <option value="young">Young Adult (1–3 years)</option>
+          <option value="adult">Adult (3–7 years)</option>
+          <option value="senior">Senior (7+ years)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Dog Size -->
+    <div class="field">
+      <label>Dog Size / Breed Type</label>
+      <div class="size-visual">
+        <div class="size-opt" onclick="setSize('small')" id="s-small">
+          <span class="dog-emoji">🐩</span>
+          <span class="size-label">Small<br>under 10kg</span>
+        </div>
+        <div class="size-opt" onclick="setSize('medium')" id="s-medium">
+          <span class="dog-emoji">🐕</span>
+          <span class="size-label">Medium<br>10–25kg</span>
+        </div>
+        <div class="size-opt" onclick="setSize('large')" id="s-large">
+          <span class="dog-emoji">🦮</span>
+          <span class="size-label">Large<br>25kg+</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity -->
+    <div class="field">
+      <label>Activity Level</label>
+      <div class="select-wrap">
+        <select id="activity">
+          <option value="">-- Select activity --</option>
+          <option value="low">Low — mostly resting, indoor</option>
+          <option value="moderate">Moderate — daily walks</option>
+          <option value="high">High — very active, runs daily</option>
+          <option value="working">Working / Sport dog</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Food Type -->
+    <div class="field">
+      <label>Food Type</label>
+      <div class="select-wrap">
+        <select id="foodtype">
+          <option value="dry">Dry Kibble</option>
+          <option value="wet">Wet / Canned Food</option>
+          <option value="raw">Raw Food Diet</option>
+          <option value="mixed">Mixed (Dry + Wet)</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">🐾 Calculate Daily Food Amount</button>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon">📊</div>
+      Feeding Results
+    </div>
+
+    <div class="result-empty" id="resultEmpty">
+      <span class="big-icon">🦴</span>
+      <p>Fill in your dog's details on the left and click <strong>Calculate</strong> to see the perfect daily feeding amount.</p>
+    </div>
+
+    <div class="result-content" id="resultContent">
+
+      <div style="margin-bottom:20px;">
+        <p style="font-size:14px;color:var(--text-muted);">Daily food for <strong id="rName" style="color:var(--bark);"></strong></p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-num" id="rGrams">—</div>
+          <div class="metric-unit">grams / day</div>
+        </div>
+        <div class="metric-box sage">
+          <div class="metric-num" id="rCups">—</div>
+          <div class="metric-unit">cups / day</div>
+        </div>
+        <div class="metric-box sage">
+          <div class="metric-num" id="rKcal">—</div>
+          <div class="metric-unit">kcal / day</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-num" id="rMeals">—</div>
+          <div class="metric-unit">meals / day</div>
+        </div>
+      </div>
+
+      <p class="schedule-title">Recommended Feeding Schedule</p>
+
+      <div id="scheduleRows"></div>
+
+      <div class="tip-box" id="tipBox"></div>
+
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ This calculator provides estimates based on general guidelines. Always consult your veterinarian for personalised feeding advice, especially for puppies, seniors, or dogs with health conditions.
+    </div>
+
+  </div>
+</div>
+
+<!-- INFO BOXES -->
+<div class="info-section">
+  <div class="info-grid">
+    <div class="info-box">
+      <span class="info-icon">⚖️</span>
+      <h3>Why Weight Matters</h3>
+      <p>A dog's weight is the single most important factor for calculating correct food portions. Overfeeding by just 10% can lead to obesity within months.</p>
+    </div>
+    <div class="info-box">
+      <span class="info-icon">🏃</span>
+      <h3>Activity Changes Everything</h3>
+      <p>A highly active working dog may need up to 40% more calories than a sedentary dog of the same weight and breed. Activity level matters as much as size.</p>
+    </div>
+    <div class="info-box">
+      <span class="info-icon">🌿</span>
+      <h3>Age Adjustments</h3>
+      <p>Puppies need more calories per kg than adults for healthy growth. Senior dogs typically need 20% fewer calories to maintain a healthy weight.</p>
+    </div>
+  </div>
+
+  <!-- SEO ARTICLE -->
+  <div class="article">
+    <h2>How Much Should I Feed My Dog? Complete Guide</h2>
+    <p>Feeding your dog the right amount is one of the most important things you can do for their long-term health. Too little food leads to nutritional deficiencies, while too much causes obesity — which affects over 50% of dogs in the UK and USA.</p>
+
+    <h3>The Simple Formula</h3>
+    <p>The basic calculation for adult dogs is based on their Resting Energy Requirement (RER): <strong>RER = 70 × (body weight in kg)^0.75</strong>. From this base, a multiplier is applied depending on age, activity level, and whether the dog is neutered or intact.</p>
+
+    <h3>Puppies Need More</h3>
+    <p>Puppies under 4 months need about 3× their adult RER. From 4 months to 1 year, they need about 2× the adult rate. Always feed puppy-specific food which has the right calcium and phosphorus ratios for bone development.</p>
+
+    <h3>Senior Dogs Need Less</h3>
+    <p>Dogs aged 7 and over typically have slower metabolisms. Most senior dogs need around 20% fewer calories than middle-aged adults of the same weight. Senior-specific food also tends to have joint-supporting supplements like glucosamine.</p>
+
+    <h3>Dry vs Wet Food Portions</h3>
+    <p>Wet food contains about 75–80% water, so you need significantly more of it by weight to meet calorie needs. If feeding wet food, expect to give roughly 3–4× the gram amount you would with dry kibble to achieve the same calorie intake.</p>
+
+    <h3>How Often Should I Feed My Dog?</h3>
+    <p>Adult dogs (over 1 year) do well on 2 meals per day — morning and evening. Puppies under 6 months should eat 3–4 times daily. Large breed puppies especially benefit from smaller, more frequent meals to reduce the risk of bloat.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>🐾 PawMetrics</strong><br><br>
+  Free pet care calculators for dog and cat owners.<br>
+  Results are estimates only — always consult your vet.<br><br>
+  <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+  <a href="#">About Us</a> &nbsp;·&nbsp;
+  <a href="#">Contact</a> &nbsp;·&nbsp;
+  <a href="#">All Tools</a>
+</footer>
+
+<script>
+  let weightUnit = 'kg';
+  let selectedSize = '';
+
+  function setUnit(unit) {
+    weightUnit = unit;
+    document.querySelectorAll('.unit-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && unit === 'kg') || (i === 1 && unit === 'lbs'));
+    });
+  }
+
+  function setSize(size) {
+    selectedSize = size;
+    ['small','medium','large'].forEach(s => {
+      document.getElementById('s-' + s).classList.toggle('selected', s === size);
+    });
+  }
+
+  function calculate() {
+    const nameVal = document.getElementById('dogName').value.trim();
+    const weightVal = parseFloat(document.getElementById('weight').value);
+    const age = document.getElementById('age').value;
+    const activity = document.getElementById('activity').value;
+    const foodtype = document.getElementById('foodtype').value;
+
+    if (!weightVal || !age || !activity || !selectedSize) {
+      alert('Please fill in all fields and select your dog\'s size!');
+      return;
+    }
+
+    // Convert to kg
+    let weightKg = weightUnit === 'lbs' ? weightVal * 0.453592 : weightVal;
+
+    // Base RER
+    let rer = 70 * Math.pow(weightKg, 0.75);
+
+    // Age multiplier
+    const ageMulti = { puppy: 2.5, young: 1.8, adult: 1.6, senior: 1.3 };
+    // Activity multiplier
+    const actMulti = { low: 0.85, moderate: 1.0, high: 1.3, working: 1.6 };
+
+    let kcalPerDay = rer * (ageMulti[age] || 1.6) * (actMulti[activity] || 1.0);
+    kcalPerDay = Math.round(kcalPerDay);
+
+    // Grams based on food type (kcal per 100g)
+    const kcalPer100g = { dry: 350, wet: 90, raw: 150, mixed: 250 };
+    const gramsPerDay = Math.round((kcalPerDay / kcalPer100g[foodtype]) * 100);
+
+    // Cups (1 cup dry ~110g, wet ~240g)
+    const gramPerCup = foodtype === 'wet' ? 240 : 110;
+    const cupsPerDay = (gramsPerDay / gramPerCup).toFixed(1);
+
+    // Meals per day
+    const meals = age === 'puppy' ? 4 : (age === 'young' ? 3 : 2);
+
+    const gramsPerMeal = Math.round(gramsPerDay / meals);
+    const cupsPerMeal = (gramsPerMeal / gramPerCup).toFixed(1);
+
+    // Update UI
+    const name = nameVal || 'your dog';
+    document.getElementById('rName').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById('rGrams').textContent = gramsPerDay;
+    document.getElementById('rCups').textContent = cupsPerDay;
+    document.getElementById('rKcal').textContent = kcalPerDay;
+    document.getElementById('rMeals').textContent = meals;
+
+    // Schedule
+    const schedules = {
+      4: [
+        { time: '🌅 7:00 AM', label: 'Morning' },
+        { time: '☀️ 12:00 PM', label: 'Midday' },
+        { time: '🌆 5:00 PM', label: 'Evening' },
+        { time: '🌙 9:00 PM', label: 'Night' }
+      ],
+      3: [
+        { time: '🌅 7:00 AM', label: 'Morning' },
+        { time: '☀️ 1:00 PM', label: 'Afternoon' },
+        { time: '🌆 6:00 PM', label: 'Evening' }
+      ],
+      2: [
+        { time: '🌅 7:00 AM', label: 'Morning' },
+        { time: '🌆 6:00 PM', label: 'Evening' }
+      ]
+    };
+
+    const rows = schedules[meals].map(s => `
+      <div class="schedule-row">
+        <span class="schedule-time">${s.time} <span style="color:var(--text-muted);font-size:12px;">${s.label}</span></span>
+        <span class="schedule-amount">${gramsPerMeal}g / ${cupsPerMeal} cup</span>
+      </div>
+    `).join('');
+    document.getElementById('scheduleRows').innerHTML = rows;
+
+    // Tip
+    const tips = {
+      puppy: '🐶 <strong>Puppy tip:</strong> Feed 4 smaller meals daily to support healthy growth and prevent blood sugar dips.',
+      young: '💪 <strong>Young adult tip:</strong> This is peak energy time — make sure food matches your dog\'s activity. Adjust if gaining weight.',
+      adult: '✅ <strong>Adult tip:</strong> 2 meals per day is ideal. Avoid feeding right before or after vigorous exercise.',
+      senior: '🧓 <strong>Senior tip:</strong> Consider switching to senior-formula food with joint supplements. Fewer calories, more nutrients.'
+    };
+    document.getElementById('tipBox').innerHTML = tips[age];
+
+    // Show results
+    document.getElementById('resultEmpty').classList.add('hide');
+    document.getElementById('resultContent').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
